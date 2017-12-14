@@ -17,4 +17,18 @@ Route::get('/', function () {
 
 Route::get('/get_cates','CateController@getCateItems');
 
-Route::post('/create_cates','CateController@makeCateItem')
+Route::post('/create_cates','CateController@makeCateItem');
+
+Route::get('/test','CateController@test');
+
+Route::get('/reg','UserController@reg');
+
+Route::post('/reg','UserController@doReg');
+
+Route::get('/login','UserController@login');
+
+Route::post('/login','UserController@dologin');
+
+Route::get('/logout','UserController@logout');
+
+Route::get('login_test','UserController@testLogin')->middleware('login');

@@ -1,87 +1,73 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function doReg(Request $request)
     {
-        //
+        $name = $request->input('name');
+        $password = $request->input('password');
+        $email = $request->input('email');
+        $password = Hash::make($password);
+        $user = new User;
+        $user->name = $name;
+        $user->email = $email;
+        $user->password = $password;
+        $user->save();
+
+        return response()->json([
+            'result'=>'success'
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function reg()
     {
-        //
+        return view('test');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function login()
     {
-        //
+        return view('test');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    public function doLogin(Request $request){
+        $name = $request->input('name');
+        $password = $request->input('password');
+        $user = User::where('name',$name)->get();
+        $result = Hash::check($password,$user[0]->password);
+        if($result){
+            session([
+               'user' => $user[0]->id
+            ]);
+           return response()->json([
+                'reuslt' => 'success'
+            ]);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function testLogin(Request $request)
     {
-        //
+        if(session('user')){
+            return response()->json([
+                'result'=>'success'
+            ]);
+        }else{
+            return response()->json([
+                'result'=>'error'
+            ]);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function logout(Request $request)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if(session('user')){
+            $request->session()->flush();
+        }
     }
 }

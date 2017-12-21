@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use JWTAuth;
 
 class CheckLogin
 {
@@ -15,11 +16,18 @@ class CheckLogin
      */
     public function handle($request, Closure $next)
     {
-        $user = $request->session()->get('user');
-        if($user){
-            return $next($request);
-        }else{
-            return redirect()->to('http://www.baidu.com');
+
+        if(!$request->token){
+            return reponse()->json([
+                'status'=>'error',
+                'message' =>'token is missed'
+            ]);
         }
+
+        $user = JWTAuth::parseToken()->toUser();
+        session([
+            'user'=>$user
+        ]);
+        return $next($request);
     }
 }

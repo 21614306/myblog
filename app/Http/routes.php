@@ -31,4 +31,6 @@ Route::post('/login','UserController@dologin');
 
 Route::get('/logout','UserController@logout');
 
-Route::get('login_test','UserController@testLogin')->middleware('login');
+Route::get('/testLogin','UserController@testLogin')->middleware('login');
+
+Route::get('/login_test','UserController@testLogin');

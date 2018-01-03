@@ -15,7 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/get_cates','CateController@getCateItems');
+Route::get('api/get_cates','CateController@getCateItems');
+
+Route::get('/create_cates','CateController@getMakeCateItem');
 
 Route::post('/create_cates','CateController@makeCateItem');
 
